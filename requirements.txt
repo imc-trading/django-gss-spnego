@@ -1,0 +1,5 @@
+# This file is here because many Platforms as a Service look for
+#	requirements.txt in the root directory of a project.
+winkerberos; sys_platform == 'win32'
+kerberos; sys_platform != 'win32'
+Django>=1.11
