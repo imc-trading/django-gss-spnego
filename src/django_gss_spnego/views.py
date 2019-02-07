@@ -23,12 +23,15 @@ class SpnegoAuthMixin(object):
     def get(self, request, *args, **kwargs):
         self._spnego_success = False
         self._gssresponse = ""
-        if "Negotiate" in request.META.get('HTTP_AUTHORIZATION', ""):
-            user = authenticate(request, spnego=request.META["HTTP_AUTHORIZATION"].split()[1])
-            if user:
-                self._spnego_success = True
-                self._gssresponse = user.gssresponse
-                login(request, user)
+        if not request.user.is_authenticated:
+            if "Negotiate" in request.META.get('HTTP_AUTHORIZATION', ""):
+                user = authenticate(request, spnego=request.META["HTTP_AUTHORIZATION"].split()[1])
+                if user:
+                    self._spnego_success = True
+                    self._gssresponse = user.gssresponse
+                    login(request, user)
+        else:
+            self._spnego_success = True
         return super(SpnegoAuthMixin, self).get(request, *args, **kwargs)
 
 
