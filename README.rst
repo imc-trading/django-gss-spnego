@@ -23,7 +23,7 @@ The following settings must be present:
 * ``settings.KERBEROS_SPN`` may be set to ``SERVICENAME@HOSTNAME`` `ie` ``HTTP@django-server``.
   Setting it to "" means "try all SPNs in the host keytab"
 * Environment variables to control your KRB5 installation.
-  See the `_kerberos env` documentation for details.
+  See the `kerberos env`_ documentation for details.
 
 Usage
 -----
