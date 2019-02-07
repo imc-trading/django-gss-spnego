@@ -64,7 +64,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-KERBEROS_SPN = "HTTP@django-gss-spnego"
+KERBEROS_SPN = ""
 
 # Additional locations of static files
 STATICFILES_DIRS = (

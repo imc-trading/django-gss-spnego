@@ -20,7 +20,8 @@ The following settings must be present:
 
 * ``django_gss_spnego`` in ``settings.INSTALLED_APPS``
 * ``settings.KERBEROS_REALM`` must be set to the name of your realm
-* ``settings.KERBEROS_SPN`` must be set to ``SERVICENAME@HOSTNAME`` `ie` ``HTTP@django-server``
+* ``settings.KERBEROS_SPN`` may be set to ``SERVICENAME@HOSTNAME`` `ie` ``HTTP@django-server``.
+  Setting it to "" means "try all SPNs in the host keytab"
 
 Usage
 -----
