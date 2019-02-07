@@ -41,7 +41,7 @@ class SpnegoViewMixin(object):
 
     def get_context_data(self, **kwargs):
         ctx = super(SpnegoViewMixin, self).get_context_data(**kwargs)
-        ctx.update({"spnego_succes": self._spnego_success})
+        ctx.update({"spnego_success": self._spnego_success})
 
 
 class SpnegoView(SpnegoAuthMixin, SpnegoViewMixin, ContextMixin, TemplateResponseMixin, View):
