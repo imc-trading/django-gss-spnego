@@ -65,6 +65,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 KERBEROS_SPN = ""
+LOGIN_REDIRECT_URL = "admin:index"
 
 # Additional locations of static files
 STATICFILES_DIRS = (

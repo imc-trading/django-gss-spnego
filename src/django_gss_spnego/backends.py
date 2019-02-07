@@ -17,13 +17,14 @@ class SpnegoBackendMixin(object):
         if spnego is None:
             return super(SpnegoBackendMixin, self).authenticate(request, **kwargs)
         try:
-            _, context = kerberos.authGSSServerInit(settings.KERBEROS_SPN or "")
+            _, context = kerberos.authGSSServerInit(getattr(settings, "KERBEROS_SPN", ""))
             result = kerberos.authGSSServerStep(context, spnego)
             if not result:
                 return None
-            request.gssresponse = kerberos.authGSSServerResponse(context)
             username = kerberos.authGSSServerUserName(context)
-            return self.get_user_from_username(username)
+            user = self.get_user_from_username(username)
+            user.gssresponse = kerberos.authGSSServerResponse(context)
+            return user
         except kerberos.GSSError:
             logger.exception("Kerberos error!")
             return None
