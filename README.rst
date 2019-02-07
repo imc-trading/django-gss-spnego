@@ -42,7 +42,9 @@ Ensure those backends can resolve a User object from a kerberos principal name.
 
 Register aforementioned backend class in ``settings.AUTHENTICATION_BACKENDS``
 
-Create a view somewhere on your site that extends ``SpnegoView``, and add it to your URL router
+Create a view somewhere on your site that uses ``SpnegoAuthMixin``, and add it to your URL router.
+If using one of the provided CBV View classes, also include ``django_gss_spnego`` and
+``django.contrib.admin`` in your ``settings.INSTALLED_APPS`` for access to the spnego.html template.
 
 .. code-block:: python
 
