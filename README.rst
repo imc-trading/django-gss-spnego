@@ -4,8 +4,9 @@ django-gss-spngeo
 
 A Django application for adding Kerberos/GSS authentication to your existing backend
 
-This Django application provides some ``View`` classes and a backend ``Mixin`` to
-extend your existing ``AuthenticationBackend`` with SPNEGO-based authentication.
+This Django application provides some ``View`` classes and ``Mixin``s and a backend
+``Mixin`` to extend your existing ``AuthenticationBackend`` with SPNEGO-based
+authentication.
 
 Prereqs
 -------
@@ -19,9 +20,10 @@ Configuration
 The following settings must be present:
 
 * ``django_gss_spnego`` in ``settings.INSTALLED_APPS``
-* ``settings.KERBEROS_REALM`` must be set to the name of your realm
 * ``settings.KERBEROS_SPN`` may be set to ``SERVICENAME@HOSTNAME`` `ie` ``HTTP@django-server``.
   Setting it to "" means "try all SPNs in the host keytab"
+* Environment variables to control your KRB5 installation.
+  See the `_kerberos env` documentation for details.
 
 Usage
 -----
@@ -78,3 +80,4 @@ Apache 2.0 -- see the LICENSE file for more detail
 .. _similar Middleware: https://github.com/AzMoo/django-auth-spnego
 .. _Técnico Lisboa - DSI: https://github.com/ist-dsi
 .. _kerberos kdc framework: https://github.com/ist-dsi/docker-kerberos
+.. _kerberos env: http://web.mit.edu/kerberos/www/krb5-1.16/doc/user/user_config/kerberos.html#kerberos-7
