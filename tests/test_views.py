@@ -17,3 +17,9 @@ def test_initial_get(client):
 def test_authentication(client):
     resp = client.get('/spnego', HTTP_AUTHORIZATION="Negotiate FakeString")
     assert resp.status_code == 200
+
+@override_settings(ROOT_URLCONF='tests.test_views')
+def test_repeated_authentication(client):
+    client.get('/spnego', HTTP_AUTHORIZATION="Negotiate FakeString")
+    resp = client.get('/spnego', HTTP_AUTHORIZATION="Negotiate FakeString")
+    assert resp.status_code == 200
