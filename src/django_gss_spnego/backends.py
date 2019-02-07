@@ -1,13 +1,9 @@
+import kerberos
 import logging
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
-
-try:
-    import kerberos
-except ImportError:
-    import winkerberos as kerberos
 
 logger = logging.getLogger(__name__)
 
