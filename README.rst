@@ -56,22 +56,18 @@ Acquire a ticket, and point your favorite supported client at the endpoint
 
 .. code-block:: python
 
-    import requests_kerberos
+    import requests_gssapi
     import requests
 
-    auth = requests_kerberos.HTTPKerberosAuth()
+    auth = requests_gssapi.HTTPSPNEGOAuth()
     sess = requests.session()
     sess.auth = auth
     sess.get("http://localhost/auth/spnego")
     sess.get("http://localhost/page/that/requires/authorized_user")
 
-You can also take a look at the ``integration`` folder for an example of a complete MIT kerberos
-implementation with this extension.
-
 Acknowledgements
 ----------------
 * `Matt Magin (AzMoo)`_ for writing a `similar Middleware`_
-* `Técnico Lisboa - DSI`_ for a very useful `kerberos kdc framework`_
 
 
 License
@@ -80,6 +76,4 @@ Apache 2.0 -- see the LICENSE file for more detail
 
 .. _Matt Magin (AzMoo): https://github.com/AzMoo
 .. _similar Middleware: https://github.com/AzMoo/django-auth-spnego
-.. _Técnico Lisboa - DSI: https://github.com/ist-dsi
-.. _kerberos kdc framework: https://github.com/ist-dsi/docker-kerberos
 .. _kerberos env: http://web.mit.edu/kerberos/www/krb5-1.16/doc/user/user_config/kerberos.html#kerberos-7
