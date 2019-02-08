@@ -15,14 +15,14 @@ class SpnegoBackendMixin(object):
             return super(SpnegoBackendMixin, self).authenticate(request, **kwargs)
         try:
             token = base64.b64decode(spnego)
-            credentials = gssapi.creds.Credentials(usage='accept')
+            credentials = gssapi.creds.Credentials(usage="accept")
             context = gssapi.SecurityContext(creds=credentials)
             response = context.step(token)
             if not response:
                 return None
             username = str(context.initiator_name)
             user = self.get_user_from_username(username)
-            user.gssresponse = base64.b64encode(response).decode('utf-8')
+            user.gssresponse = base64.b64encode(response).decode("utf-8")
             return user
         except gssapi.exceptions.GSSError:
             logger.exception("Kerberos error!")

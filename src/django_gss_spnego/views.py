@@ -24,8 +24,10 @@ class SpnegoAuthMixin(object):
         self._spnego_success = False
         self._gssresponse = ""
         if not request.user.is_authenticated:
-            if "Negotiate" in request.META.get('HTTP_AUTHORIZATION', ""):
-                user = authenticate(request, spnego=request.META["HTTP_AUTHORIZATION"].split()[1])
+            if "Negotiate" in request.META.get("HTTP_AUTHORIZATION", ""):
+                user = authenticate(
+                    request, spnego=request.META["HTTP_AUTHORIZATION"].split()[1]
+                )
                 if user:
                     self._spnego_success = True
                     self._gssresponse = user.gssresponse
@@ -44,10 +46,12 @@ class SpnegoViewMixin(object):
         ctx.update({"spnego_success": self._spnego_success})
 
 
-class SpnegoView(SpnegoAuthMixin, SpnegoViewMixin, ContextMixin, TemplateResponseMixin, View):
+class SpnegoView(
+    SpnegoAuthMixin, SpnegoViewMixin, ContextMixin, TemplateResponseMixin, View
+):
     http_method_names = ["get", "post", "put", "head", "options"]
     response_class = SpnegoHttpTemplate
-    template_name = 'spnego.html'
+    template_name = "spnego.html"
 
     def render_to_response(self, context, **response_kwargs):
         resp = super(SpnegoView, self).render_to_response(context, **response_kwargs)
@@ -61,7 +65,7 @@ class SpnegoView(SpnegoAuthMixin, SpnegoViewMixin, ContextMixin, TemplateRespons
 class SpnegoLoginView(SpnegoAuthMixin, SpnegoViewMixin, LoginView):
     http_method_names = ["get", "post", "put", "head", "options"]
     response_class = SpnegoHttpTemplate
-    template_name = 'spnego.html'
+    template_name = "spnego.html"
 
     def get(self, request, *args, **kwargs):
         resp = super(SpnegoLoginView, self).get(request, *args, **kwargs)
