@@ -4,9 +4,8 @@ django-gss-spngeo
 
 A Django application for adding Kerberos/GSS authentication to your existing backend
 
-This Django application provides some ``View`` classes and ``Mixin``s and a backend
-``Mixin`` to extend your existing ``AuthenticationBackend`` with SPNEGO-based
-authentication.
+This Django application provides some ``View`` classes and ``Mixin`` classes and a backend
+``Mixin`` to extend your existing ``AuthenticationBackend`` with SPNEGO-based authentication.
 
 Prereqs
 -------
