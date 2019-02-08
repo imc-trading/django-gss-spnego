@@ -1,7 +1,8 @@
-import kerberos
+import base64
+import binascii
+import gssapi
 import logging
 
-from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
 
@@ -13,16 +14,20 @@ class SpnegoBackendMixin(object):
         if spnego is None:
             return super(SpnegoBackendMixin, self).authenticate(request, **kwargs)
         try:
-            _, context = kerberos.authGSSServerInit(getattr(settings, "KERBEROS_SPN", ""))
-            result = kerberos.authGSSServerStep(context, spnego)
-            if not result:
+            token = base64.b64decode(spnego)
+            credentials = gssapi.creds.Credentials(usage='accept')
+            context = gssapi.SecurityContext(creds=credentials)
+            response = context.step(token)
+            if not response:
                 return None
-            username = kerberos.authGSSServerUserName(context)
+            username = str(context.initiator_name)
             user = self.get_user_from_username(username)
-            user.gssresponse = kerberos.authGSSServerResponse(context)
+            user.gssresponse = base64.b64encode(response).decode('utf-8')
             return user
-        except kerberos.GSSError:
+        except gssapi.exceptions.GSSError:
             logger.exception("Kerberos error!")
+            return None
+        except (binascii.Error, TypeError):
             return None
 
 

@@ -1,7 +1,11 @@
+import os
+import random
+
 import django
 from django.conf import settings
 from django.core import management
 from django.test import Client
+import k5test
 import pytest
 
 
@@ -47,7 +51,7 @@ def pytest_configure(config):
             'django.contrib.auth.hashers.MD5PasswordHasher',
         ),
         AUTHENTICATION_BACKENDS = ['django_gss_spnego.backends.SpnegoModelBackend'],
-        ROOT_URLCONF='',
+        ROOT_URLCONF='tests.test_views',
         ALLOWED_HOSTS=["*"],
     )
     django.setup()
@@ -59,9 +63,15 @@ def client():
     yield Client()
 
 
-@pytest.fixture(autouse=True)
-def kerberos(monkeypatch):
-    monkeypatch.setattr("kerberos.authGSSServerInit", lambda _: ("0", "ctx"))
-    monkeypatch.setattr("kerberos.authGSSServerStep", lambda _, __: "0")
-    monkeypatch.setattr("kerberos.authGSSServerUserName", lambda _: "admin")
-    monkeypatch.setattr("kerberos.authGSSServerResponse", lambda _: "challenge")
+@pytest.fixture(scope="session", autouse=True)
+def k5realm():
+    k5realm = k5test.K5Realm(
+        krb5_conf={'libdefaults': {'rdns': 'false'}},
+        portbase=random.randint(1000, 6000) * 10,  # For tox parallel
+    )
+    os.environ.update(k5realm.env)
+    yield k5realm
+    for k in k5realm.env.keys():
+        del os.environ[k]
+    k5realm.stop()
+    del k5realm
