@@ -6,6 +6,7 @@ from django.conf import settings
 from django.core import management
 from django.test import Client
 import k5test
+import gssapi
 import pytest
 
 
@@ -68,3 +69,13 @@ def k5realm():
         del os.environ[k]
     k5realm.stop()
     del k5realm
+
+
+@pytest.fixture
+def k5ctx(k5realm):
+    spn = gssapi.Name(
+        "host/{}".format(k5realm.hostname), gssapi.raw.NameType.kerberos_principal
+    )
+    ctx = gssapi.SecurityContext(name=spn, usage="initiate")
+    yield ctx
+    del ctx

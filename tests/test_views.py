@@ -1,12 +1,13 @@
 from django.conf.urls import url
 from django.contrib import admin
-from django_gss_spnego.views import SpnegoView
+from django_gss_spnego.views import SpnegoView, SpnegoRedirectView, SpnegoLoginView
 import base64
-import gssapi
 
 urlpatterns = [
     url(r"^admin/", admin.site.urls),
     url(r"^spnego$", SpnegoView.as_view(), name="spnego"),
+    url(r"^redirect$", SpnegoRedirectView.as_view(), name="redirect"),
+    url(r"^login$", SpnegoLoginView.as_view(), name="login"),
 ]
 
 
@@ -16,22 +17,44 @@ def test_initial_get(client):
 
 
 def test_failed_authentication(client):
-    negotiate = "Negotiate BADSTRING"
+    negotiate = "Negotiate {}".format(base64.b64encode("BAD TOKEN").decode("utf-8"))
     resp = client.get("/spnego", HTTP_AUTHORIZATION=negotiate)
     assert resp.status_code == 401
 
 
-def test_authentication(client, k5realm):
-    spn = gssapi.Name(
-        "host/{}".format(k5realm.hostname), gssapi.raw.NameType.kerberos_principal
-    )
-    context = gssapi.SecurityContext(name=spn, usage="initiate")
-    token = context.step()
+def test_authentication(client, k5ctx):
+    token = k5ctx.step()
     negotiate = "Negotiate {}".format(base64.b64encode(token).decode("utf-8"))
     resp = client.get("/spnego", HTTP_AUTHORIZATION=negotiate)
-    context.step(base64.b64decode(resp["WWW-Authenticate"].split()[1]))
-    assert context.complete
+    k5ctx.step(base64.b64decode(resp["WWW-Authenticate"].split()[1]))
+    assert k5ctx.complete
     assert resp.status_code == 200
     # Test a second authentication to make sure we bypass SPNEGO in an authenticated session
     resp = client.get("/spnego", HTTP_AUTHORIZATION=negotiate)
     assert resp.status_code == 200
+
+
+def test_redirect(client, k5ctx):
+    token = k5ctx.step()
+    negotiate = "Negotiate {}".format(base64.b64encode(token).decode("utf-8"))
+    resp = client.get("/redirect", HTTP_AUTHORIZATION=negotiate)
+    k5ctx.step(base64.b64decode(resp["WWW-Authenticate"].split()[1]))
+    assert k5ctx.complete
+    assert resp.status_code == 302
+    assert resp.url == "/admin/"
+
+
+def test_failed_redirect(client):
+    negotiate = "Negotiate BADSTRING"
+    resp = client.get("/redirect", HTTP_AUTHORIZATION=negotiate)
+    assert resp.status_code == 401
+
+
+def test_login(client, k5ctx):
+    token = k5ctx.step()
+    negotiate = "Negotiate {}".format(base64.b64encode(token).decode("utf-8"))
+    resp = client.get("/login", HTTP_AUTHORIZATION=negotiate)
+    k5ctx.step(base64.b64decode(resp["WWW-Authenticate"].split()[1]))
+    assert k5ctx.complete
+    assert resp.status_code == 302
+    assert resp.url == "/accounts/profile/"
