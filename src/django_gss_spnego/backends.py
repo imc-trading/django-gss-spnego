@@ -32,7 +32,8 @@ class SpnegoBackendMixin(object):
 
 
 class SpnegoModelBackend(SpnegoBackendMixin, ModelBackend):
-    def get_user_from_username(self, username):
+    @classmethod
+    def get_user_from_username(cls, username):
         model = get_user_model()
         try:
             user, _ = model.objects.get_or_create(username=username.split("@")[0])
