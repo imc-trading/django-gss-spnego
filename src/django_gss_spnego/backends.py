@@ -3,6 +3,7 @@ import binascii
 import gssapi
 import logging
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
 
@@ -24,10 +25,11 @@ class SpnegoBackendMixin(object):
             user = self.get_user_from_username(username)
             user.gssresponse = base64.b64encode(response).decode("utf-8")
             return user
-        except gssapi.exceptions.GSSError:
-            logger.exception("Kerberos error!")
+        except gssapi.exceptions.GSSError as e:
+            logger.warning("GSSAPI Error: %s", e, exc_info=settings.DEBUG)
             return None
         except (binascii.Error, TypeError):
+            logger.warning("GSSAPI Error: Invalid base64 encoded token provided")
             return None
 
 
