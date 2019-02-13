@@ -18,7 +18,7 @@ class SpnegoBackendMixin(object):
             credentials = gssapi.creds.Credentials(usage="accept")
             context = gssapi.SecurityContext(creds=credentials)
             response = context.step(token)
-            if not response:
+            if not context.complete:
                 return None
             username = str(context.initiator_name)
             user = self.get_user_from_username(username)
