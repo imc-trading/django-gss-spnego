@@ -17,7 +17,7 @@ def test_initial_get(client):
 
 
 def test_failed_authentication(client):
-    negotiate = "Negotiate {}".format(base64.b64encode("BAD TOKEN").decode("utf-8"))
+    negotiate = "Negotiate {}".format(base64.b64encode(b"BAD TOKEN").decode("utf-8"))
     resp = client.get("/spnego", HTTP_AUTHORIZATION=negotiate)
     assert resp.status_code == 401
 
