@@ -58,6 +58,8 @@ class SpnegoView(
         if self._spnego_success:
             if self._gssresponse:
                 resp["WWW-Authenticate"] = "Negotiate {}".format(self._gssresponse)
+            else:
+                del(resp["WWW-Authenticate"])
             resp.status_code = 200
         return resp
 
@@ -85,5 +87,6 @@ class SpnegoRedirectView(SpnegoView, RedirectView):
             return orig_resp
         else:
             new_resp = HttpResponseRedirect(self.get_redirect_url(*args, **kwargs))
-            new_resp["WWW-Authenticate"] = orig_resp["WWW-Authenticate"]
+            if "WWW-Authenticate" in orig_resp:
+                new_resp["WWW-Authenticate"] = orig_resp["WWW-Authenticate"]
             return new_resp

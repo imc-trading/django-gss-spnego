@@ -26,7 +26,8 @@ def test_authentication(client, k5ctx):
     token = k5ctx.step()
     negotiate = "Negotiate {}".format(base64.b64encode(token).decode("utf-8"))
     resp = client.get("/spnego", HTTP_AUTHORIZATION=negotiate)
-    k5ctx.step(base64.b64decode(resp["WWW-Authenticate"].split()[1]))
+    if "WWW-Authenticate" in resp:
+        k5ctx.step(base64.b64decode(resp["WWW-Authenticate"].split()[1]))
     assert k5ctx.complete
     assert resp.status_code == 200
     # Test a second authentication to make sure we bypass SPNEGO in an authenticated session
@@ -38,7 +39,8 @@ def test_redirect(client, k5ctx):
     token = k5ctx.step()
     negotiate = "Negotiate {}".format(base64.b64encode(token).decode("utf-8"))
     resp = client.get("/redirect", HTTP_AUTHORIZATION=negotiate)
-    k5ctx.step(base64.b64decode(resp["WWW-Authenticate"].split()[1]))
+    if "WWW-Authenticate" in resp:
+        k5ctx.step(base64.b64decode(resp["WWW-Authenticate"].split()[1]))
     assert k5ctx.complete
     assert resp.status_code == 302
     assert resp.url == "/admin/"
@@ -54,7 +56,8 @@ def test_login(client, k5ctx):
     token = k5ctx.step()
     negotiate = "Negotiate {}".format(base64.b64encode(token).decode("utf-8"))
     resp = client.get("/login", HTTP_AUTHORIZATION=negotiate)
-    k5ctx.step(base64.b64decode(resp["WWW-Authenticate"].split()[1]))
+    if "WWW-Authenticate" in resp:
+        k5ctx.step(base64.b64decode(resp["WWW-Authenticate"].split()[1]))
     assert k5ctx.complete
     assert resp.status_code == 302
     assert resp.url == "/accounts/profile/"

@@ -23,7 +23,9 @@ class SpnegoBackendMixin(object):
                 return None
             username = str(context.initiator_name)
             user = self.get_user_from_username(username)
-            user.gssresponse = base64.b64encode(response).decode("utf-8")
+            user.gssresponse = None
+            if response:
+                user.gssresponse = base64.b64encode(response).decode("utf-8")
             return user
         except gssapi.exceptions.GSSError as e:
             logger.warning("GSSAPI Error: %s", e, exc_info=settings.DEBUG)

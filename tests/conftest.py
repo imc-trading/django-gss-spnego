@@ -72,11 +72,13 @@ def k5realm():
     del k5realm
 
 
-@pytest.fixture
-def k5ctx(k5realm):
+@pytest.fixture(params=[
+    [gssapi.RequirementFlag.out_of_sequence_detection], [gssapi.RequirementFlag.out_of_sequence_detection, gssapi.RequirementFlag.mutual_authentication]
+])
+def k5ctx(k5realm, request):
     spn = gssapi.Name(
         "host/{}".format(k5realm.hostname), gssapi.raw.NameType.kerberos_principal
     )
-    ctx = gssapi.SecurityContext(name=spn, usage="initiate")
+    ctx = gssapi.SecurityContext(name=spn, usage="initiate", flags=request.param)
     yield ctx
     del ctx
