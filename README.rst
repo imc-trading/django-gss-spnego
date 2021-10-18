@@ -7,11 +7,23 @@ A Django application for adding Kerberos/GSS authentication to your existing bac
 This Django application provides some ``View`` and ``Mixin`` classes along with a backend
 ``Mixin`` class to extend your existing ``AuthenticationBackend`` with SPNEGO-based authentication.
 
+This provides additional flexibility over a Middleware solution that would require all users to
+use/support SPNEGO all of the time, and just utilize GSSAPI on a specific login page to create a
+login session as an alternative to typing in a username and password.
+
 Prereqs
 -------
 * A working Kerberos KDC (MIT, Windows AD, Heimdall, whatever)
 * A SPN for your application server(s)
 * A method for mapping Kerberos Principals to User objects in your backend
+
+Installation
+------------
+You can install the pre-release development version from PyPi by specifying the exact version to ``pip``:
+
+``pip install django-gss-spnego==21.10.0dev``
+
+Once an official release is uploaded, you will not have to specify an exact version.
 
 Configuration
 -------------
