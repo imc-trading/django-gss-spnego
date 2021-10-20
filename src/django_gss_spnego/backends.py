@@ -30,8 +30,8 @@ class SpnegoBackendMixin(object):
         except gssapi.exceptions.GSSError as e:
             logger.warning("GSSAPI Error: %s", e, exc_info=settings.DEBUG)
             return None
-        except (binascii.Error, TypeError):
-            logger.warning("GSSAPI Error: Invalid base64 encoded token provided")
+        except (binascii.Error, TypeError) as e:
+            logger.warning("Non-GSSAPI Error: %s", e, exc_info=settings.DEBUG)
             return None
 
 

@@ -21,7 +21,7 @@ Installation
 ------------
 You can install the pre-release development version from PyPi by specifying the exact version to ``pip``:
 
-``pip install django-gss-spnego==21.10.0dev``
+``pip install django-gss-spnego==21.10.1dev``
 
 Once an official release is uploaded, you will not have to specify an exact version.
 

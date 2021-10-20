@@ -17,7 +17,7 @@ install_reqs = [
 
 setup(
     name="django-gss-spnego",
-    version="21.10.0dev",
+    version="21.10.1dev",
     url="https://github.com/imc-trading/django-gss-spnego.git",
     description="Django GSSAPI SPNEGO",
     long_description=read("README.rst"),
