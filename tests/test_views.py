@@ -1,13 +1,13 @@
-from django.conf.urls import url
+from django.urls import re_path
 from django.contrib import admin
 from django_gss_spnego.views import SpnegoView, SpnegoRedirectView, SpnegoLoginView
 import base64
 
 urlpatterns = [
-    url(r"^admin/", admin.site.urls),
-    url(r"^spnego$", SpnegoView.as_view(), name="spnego"),
-    url(r"^redirect$", SpnegoRedirectView.as_view(), name="redirect"),
-    url(r"^login$", SpnegoLoginView.as_view(), name="login"),
+    re_path(r"^admin/", admin.site.urls),
+    re_path(r"^spnego$", SpnegoView.as_view(), name="spnego"),
+    re_path(r"^redirect$", SpnegoRedirectView.as_view(), name="redirect"),
+    re_path(r"^login$", SpnegoLoginView.as_view(), name="login"),
 ]
 
 
